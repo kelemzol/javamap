@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Map {
     ArrayList<ArrayList<Field>> rawMap;
@@ -12,10 +13,22 @@ public class Map {
         rawMap = new ArrayList<>();
     }
 
+    public Map(Integer length, Integer width, Double wallProbability) {
+        rawMap = new ArrayList<>();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < length; j++) {
+                // placeholder values. I added locations to the map because fields should be neighboured in space as
+                // well as just before/after in the array. they are indexed from 1,1.
+                rawMap.add(Stream.of(new Field<>(FieldType.PLAIN,wallProbability,new Location(i + 1,j + 1),Color.Black)).
+                        collect(Collectors.toCollection(ArrayList::new)));
+            }
+        }
+    }
+
     public Map lens(int x, int y) {
         ArrayList<Field> line1 = rawMap.get(x-1);
-        ArrayList<Field> line2 = rawMap.get(x-1);
-        ArrayList<Field> line3 = rawMap.get(x-1);
+        ArrayList<Field> line2 = rawMap.get(x);
+        ArrayList<Field> line3 = rawMap.get(x+1);
         ArrayList<Field> newLine1 = new ArrayList<>();
         ArrayList<Field> newLine2 = new ArrayList<>();
         ArrayList<Field> newLine3 = new ArrayList<>();
@@ -67,6 +80,7 @@ public class Map {
     }
 
     private enum Color {
+        // Shouldn't enums be all caps?
         Red, Black;
     }
 }
