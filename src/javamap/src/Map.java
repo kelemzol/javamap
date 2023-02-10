@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,13 +14,23 @@ public class Map {
         rawMap = new ArrayList<>();
     }
 
-    public Map(Integer length, Integer width, Double wallProbability) {
+    public Map(Integer width, Integer height, Double maxPlainProbability, Double maxWallProbability, Integer numberOfStartWalls) {
+        Random random = new Random();
         rawMap = new ArrayList<>();
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < length; j++) {
-                rawMap.add(Stream.of(new Field<>(FieldType.PLAIN,wallProbability,new Location(i, j),Color.BLACK)).
+        
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                rawMap.add(Stream.of(new Field<>(FieldType.PLAIN, maxPlainProbability * random.nextDouble(), Color.BLACK)).
                         collect(Collectors.toCollection(ArrayList::new)));
             }
+        }
+
+        for(int i = 0; i < numberOfStartWalls; i++) {
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
+            Field field = rawMap.get(x).get(y);
+            field.fieldType = FieldType.WALL;
+            field.probability = maxWallProbability * random.nextDouble();
         }
     }
 
