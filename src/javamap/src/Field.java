@@ -12,7 +12,6 @@ public class Field<ColorType> {
         this.color = color;
     }
 
-    // TODO: We should add location here as well i think
     public <NewColorType> Field<NewColorType> colorize(NewColorType newColor) {
         return new Field<NewColorType>(fieldType, probability, null, newColor);
     }

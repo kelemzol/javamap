@@ -17,32 +17,24 @@ public class Map {
         rawMap = new ArrayList<>();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < length; j++) {
-                // placeholder values. I added locations to the map because fields should be neighboured in space as
-                // well as just before/after in the array. they are indexed from 1,1.
-                rawMap.add(Stream.of(new Field<>(FieldType.PLAIN,wallProbability,new Location(i + 1,j + 1),Color.Black)).
+                rawMap.add(Stream.of(new Field<>(FieldType.PLAIN,wallProbability,new Location(i, j),Color.BLACK)).
                         collect(Collectors.toCollection(ArrayList::new)));
             }
         }
     }
 
-    public Map lens(int x, int y) {
-        ArrayList<Field> line1 = rawMap.get(x-1);
-        ArrayList<Field> line2 = rawMap.get(x);
-        ArrayList<Field> line3 = rawMap.get(x+1);
-        ArrayList<Field> newLine1 = new ArrayList<>();
-        ArrayList<Field> newLine2 = new ArrayList<>();
-        ArrayList<Field> newLine3 = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            int index = y + i - 1;
-            newLine1.add(i, line1.get(index));
-            newLine2.add(i, line2.get(index));
-            newLine3.add(i, line3.get(index));
+    public ArrayList<Field> lens(int x, int y) {
+        ArrayList<Field> array = new ArrayList<>();
+        for (int x_ = x-1; x_ <= x+1; x_++) {
+            for (int y_ = x-1; y_ <= y+1; y_++) {
+                if (x_ > 0 && x_ < rawMap.size()) {
+                    if (y_ > 0 && y_ < rawMap.get(0).size()) {
+                        array.add(rawMap.get(x_).get(y_));
+                    }
+                }
+            }
         }
-        ArrayList<ArrayList<Field>> newRawMap = new ArrayList<>();
-        newRawMap.add(0, newLine1);
-        newRawMap.add(1, newLine2);
-        newRawMap.add(2, newLine3);
-        return new Map(newRawMap);
+        return array;
     }
 
     public boolean isConnected() {
@@ -51,19 +43,20 @@ public class Map {
 
     public boolean isConnectedWith(FieldType fieldType) {
         ArrayList<ArrayList<Field<Color>>> map = rawMap.stream()
-                .map(arr -> arr.stream().map(f -> (Field<Color>)f.colorize(Color.Black))
+                .map(arr -> arr.stream().map(f -> (Field<Color>)f.colorize(Color.BLACK))
                 .collect(Collectors.toCollection(ArrayList::new)))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         boolean findFirst = false;
         for (int x = 0; x < map.size(); x++) {
-            if (findFirst)
-                break;
             for (int y = 0; y < map.get(x).size(); y++) {
                 if (map.get(x).get(y).getFieldType() == fieldType) {
-                    map.get(x).get(y).color = Color.Red;
+                    map.get(x).get(y).color = Color.RED;
+                    findFirst = true;
                 }
             }
+            if (findFirst)
+                break;
         }
 
         boolean newColorized = true;
@@ -71,16 +64,21 @@ public class Map {
             newColorized = false;
             for (int x = 0; x < map.size(); x++) {
                 for (int y = 0; y < map.get(x).size(); y++) {
-                    Map lens = this.lens(x, y);
+                    Field<Color> current = map.get(x).get(y);
+                    if (current.color == Color.BLACK &&
+                            current.getFieldType() == FieldType.PLAIN &&
+                            this.lens(x, y).stream().anyMatch(n -> n.color == Color.RED)) {
+                        current.color = Color.RED;
+                        newColorized = true;
+                    }
                 }
             }
         }
 
-        return false;
+        return !map.stream().flatMap(a ->a.stream()).anyMatch(f -> f.fieldType == FieldType.PLAIN && f.color == Color.BLACK);
     }
 
     private enum Color {
-        // Shouldn't enums be all caps?
-        Red, Black;
+        RED, BLACK;
     }
 }
