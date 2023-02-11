@@ -9,6 +9,10 @@ public class Field<ColorType> {
         this.color = color;
     }
 
+    public Field(Field<ColorType> field) {
+        this(field.getFieldType(), field.getProbability(), field.getColor());
+    }
+
     public <NewColorType> Field<NewColorType> colorize(NewColorType newColor) {
         return new Field<NewColorType>(fieldType, probability, newColor);
     }

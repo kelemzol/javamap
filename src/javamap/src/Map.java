@@ -1,27 +1,44 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Map {
     ArrayList<ArrayList<Field>> rawMap;
+    Double maxPlainProbability;
+    Double maxWallProbability;
 
     public Map(ArrayList<ArrayList<Field>> rawMap) {
         this.rawMap = rawMap;
     }
 
-    public Map() {
+
+    public Map(Map map) {
         rawMap = new ArrayList<>();
+        map.rawMap.forEach(l -> {
+            ArrayList<Field> line = new ArrayList<>();
+            rawMap.add(line);
+            l.forEach(f -> line.add(new Field(f)));
+        });
+        this.maxPlainProbability = map.maxPlainProbability;
+        this.maxWallProbability = map.maxWallProbability;
     }
 
     public Map(Integer width, Integer height, Double maxPlainProbability, Double maxWallProbability, Integer numberOfStartWalls) {
+        this.maxPlainProbability = maxPlainProbability;
+        this.maxWallProbability = maxWallProbability;
         Random random = new Random();
         rawMap = new ArrayList<>();
-        
+
         for (int x = 0; x < width; x++) {
+            ArrayList<Field> line = new ArrayList();
+            rawMap.add(line);
             for (int y = 0; y < height; y++) {
-                rawMap.add(Stream.of(new Field<>(FieldType.PLAIN, maxPlainProbability * random.nextDouble(), Color.BLACK)).
-                        collect(Collectors.toCollection(ArrayList::new)));
+                Field field = new Field<>(FieldType.PLAIN, maxPlainProbability * random.nextDouble(), Color.BLACK);
+                line.add(field);
+//                rawMap.add(Stream.of(new Field<>(FieldType.PLAIN, maxPlainProbability * random.nextDouble(), Color.BLACK)).
+//                        collect(Collectors.toCollection(ArrayList::new)));
             }
         }
 
@@ -32,6 +49,10 @@ public class Map {
             field.fieldType = FieldType.WALL;
             field.probability = maxWallProbability * random.nextDouble();
         }
+    }
+
+    public List<List<String>> printableStructure() {
+        return rawMap.stream().map(l -> l.stream().map(Field::getFieldType).map(FieldType::getPrintableCharacter).toList()).toList();
     }
 
     public ArrayList<Field> lens(int x, int y) {
@@ -86,7 +107,7 @@ public class Map {
             }
         }
 
-        return !map.stream().flatMap(a ->a.stream()).anyMatch(f -> f.fieldType == FieldType.PLAIN && f.color == Color.BLACK);
+        return !map.stream().flatMap(ArrayList::stream).anyMatch(f -> f.fieldType == FieldType.PLAIN && f.color == Color.BLACK);
     }
 
     private enum Color {

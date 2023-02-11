@@ -1,4 +1,14 @@
 public enum FieldType {
-    WALL,
-    PLAIN
+    WALL("#"),
+    PLAIN(" ");
+
+    private String printableCharacter;
+
+    FieldType(String printableCharacter) {
+        this.printableCharacter = printableCharacter;
+    }
+
+    String getPrintableCharacter() {
+        return printableCharacter;
+    }
 }
