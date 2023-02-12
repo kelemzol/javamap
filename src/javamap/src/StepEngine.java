@@ -23,7 +23,7 @@ public class StepEngine implements StepEngineInterface {
             field.fieldType = FieldType.WALL;
             field.probability = newMap.maxWallProbability * random.nextDouble();
         }
-        System.out.println(stringBuilder.toString());
+//        System.out.println(stringBuilder.toString());
         return newMap;
     }
 }

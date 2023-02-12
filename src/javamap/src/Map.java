@@ -58,10 +58,40 @@ public class Map {
     public ArrayList<Field> lens(int x, int y) {
         ArrayList<Field> array = new ArrayList<>();
         for (int x_ = x-1; x_ <= x+1; x_++) {
-            for (int y_ = x-1; y_ <= y+1; y_++) {
+            for (int y_ = y-1; y_ <= y+1; y_++) {
                 if (x_ > 0 && x_ < rawMap.size()) {
-                    if (y_ > 0 && y_ < rawMap.get(0).size()) {
+                    if (y_ > 0 && y_ < rawMap.get(x_).size()) {
                         array.add(rawMap.get(x_).get(y_));
+                    }
+                }
+            }
+        }
+        return array;
+    }
+
+    public static <T> ArrayList<Field<T>> lens(ArrayList<ArrayList<Field<T>>> map, int x, int y) {
+        ArrayList<Field<T>> array = new ArrayList<>();
+        for (int x_ = x-1; x_ <= x+1; x_++) {
+            for (int y_ = y-1; y_ <= y+1; y_++) {
+                if (x_ >= 0 && x_ < map.size()) {
+                    if (y_ >= 0 && y_ < map.get(x_).size()) {
+                        array.add(map.get(x_).get(y_));
+                    }
+                }
+            }
+        }
+        return array;
+    }
+
+    public static <T> ArrayList<Field<T>> neighbours(ArrayList<ArrayList<Field<T>>> map, int x, int y) {
+        ArrayList<Field<T>> array = new ArrayList<>();
+        for (int x_ = x-1; x_ <= x+1; x_++) {
+            for (int y_ = y-1; y_ <= y+1; y_++) {
+                if (x_ >= 0 && x_ < map.size()) {
+                    if (y_ >= 0 && y_ < map.get(x_).size()) {
+                        if (x_ == x || y_ == y) {
+                            array.add(map.get(x_).get(y_));
+                        }
                     }
                 }
             }
@@ -85,6 +115,7 @@ public class Map {
                 if (map.get(x).get(y).getFieldType() == fieldType) {
                     map.get(x).get(y).color = Color.RED;
                     findFirst = true;
+                    break;
                 }
             }
             if (findFirst)
@@ -99,7 +130,7 @@ public class Map {
                     Field<Color> current = map.get(x).get(y);
                     if (current.color == Color.BLACK &&
                             current.getFieldType() == FieldType.PLAIN &&
-                            this.lens(x, y).stream().anyMatch(n -> n.color == Color.RED)) {
+                            neighbours(map, x, y).stream().anyMatch(n -> n.color == Color.RED)) {
                         current.color = Color.RED;
                         newColorized = true;
                     }
