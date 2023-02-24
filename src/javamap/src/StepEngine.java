@@ -17,9 +17,9 @@ public class StepEngine implements StepEngineInterface {
         ArrayList<Field> lens = newMap.lens(x, y);
         Double sumP = lens.stream().map(Field::getProbability).mapToDouble(Double::doubleValue).sum();
         stringBuilder.append("sumP:" + sumP + ";");
-        boolean turn = sumP > random.nextDouble();
-        stringBuilder.append("turn:" + turn + ";");
-        if (turn) {
+        boolean morph = sumP > random.nextDouble();
+        stringBuilder.append("morph:" + morph + ";");
+        if (morph) {
             field.fieldType = FieldType.WALL;
             field.probability = newMap.maxWallProbability * random.nextDouble();
         }

@@ -11,4 +11,5 @@ public enum FieldType {
     String getPrintableCharacter() {
         return printableCharacter;
     }
+
 }

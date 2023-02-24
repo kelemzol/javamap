@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Field<ColorType> {
     FieldType fieldType;
     Double probability;
@@ -21,11 +23,28 @@ public class Field<ColorType> {
         return fieldType;
     }
 
+    public void setFieldType(FieldType fieldType) {
+        this.fieldType = fieldType;
+    }
+
     public Double getProbability() {
         return probability;
     }
 
     public ColorType getColor() {
         return color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Field<?> field = (Field<?>) o;
+        return fieldType == field.fieldType && Objects.equals(probability, field.probability) && Objects.equals(color, field.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fieldType, probability, color);
     }
 }

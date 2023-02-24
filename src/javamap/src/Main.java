@@ -1,9 +1,10 @@
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        Panel.panelDFS();
         System.out.println("Hello Javamap!");
-        Map map = new Map(10,30,0.0005, 0.4, 3);
+        Map map = new Map(10,30,0.0005, 0.4, 10);
         StepEngine stepEngine = new StepEngine();
         System.out.println(flat(map.printableStructure()));
 //        for (int i = 0; i < 300; i++) {

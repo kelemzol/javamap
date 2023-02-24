@@ -141,7 +141,7 @@ public class Map {
         return !map.stream().flatMap(ArrayList::stream).anyMatch(f -> f.fieldType == FieldType.PLAIN && f.color == Color.BLACK);
     }
 
-    private enum Color {
+    protected enum Color {
         RED, BLACK;
     }
 }
