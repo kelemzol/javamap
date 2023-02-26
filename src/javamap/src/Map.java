@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -14,6 +15,10 @@ public class Map {
     }
 
 
+    public Map(Panel rootPanel, Double maxPlainProbability, Double maxWallProbability, Panel... panels) {
+        Panel map = Panel.mergePanels(rootPanel,panels);
+        rawMap = map.rawMap;
+    }
     public Map(Map map) {
         rawMap = new ArrayList<>();
         map.rawMap.forEach(l -> {

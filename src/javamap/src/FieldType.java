@@ -1,6 +1,6 @@
 public enum FieldType {
     WALL("#"),
-    PLAIN(" ");
+    PLAIN("0");
 
     private String printableCharacter;
 
