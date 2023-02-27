@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Panel {
 
@@ -13,11 +12,25 @@ public class Panel {
         this.rawMap = rawMap;
     }
 
+
+
+    public static Map panelBasedMapGenerator() throws Exception {
+        LinkedHashSet<Panel> asd = panelDFS();
+        Panel mergedPanel = Panel.mergePanels(asd.stream().findFirst().get(),asd.stream().findAny().get());
+        Map mappyBoi = null;
+        for (int i = 0; i < 6; i++) {
+            LinkedHashSet<Panel> panelToAdd =  panelToAdd = panelDFS();
+            mappyBoi = new Map(mergedPanel,0.0005,0.4,panelToAdd.stream().findFirst().get());
+        }
+
+
+        return mappyBoi;
+    }
     public static LinkedHashSet<Panel> panelDFS() throws Exception {
         LinkedHashSet<Panel> panelStack = new LinkedHashSet<>();
         LinkedHashSet<Panel> settledPanelStack = new LinkedHashSet<>();
 
-        panelStack.add(generateRootPanel(3,3));
+        panelStack.add(generateRootPanel(3,9, 0.2));
 
         while(!panelStack.isEmpty()) {
             Panel currentPanel = panelStack.stream().findFirst().orElseThrow(Exception::new);
@@ -39,12 +52,19 @@ public class Panel {
         return retSet;
     }
 
-    private static Panel generateRootPanel(Integer width, Integer height) {
+    private static Panel generateRootPanel(Integer width, Integer height, Double wallProbabilty) {
         ArrayList<ArrayList<Field>> retPanel = new ArrayList<>();
+        Random random = new Random();
         for (int i = 0; i < height; i++) {
             ArrayList<Field> line = new ArrayList<>();
                 for (int j = 0; j < width; j++) {
-                    line.add(new Field(FieldType.PLAIN, 0.0005, Map.Color.BLACK));
+                    Double randomNum = random.nextDouble();
+                    if(randomNum <= wallProbabilty) {
+                        line.add(new Field(FieldType.WALL, 0.0005, Map.Color.BLACK));
+                    } else {
+                        line.add(new Field(FieldType.PLAIN, 0.0005, Map.Color.BLACK));
+
+                    }
                 }
             retPanel.add(line);
         }
@@ -95,6 +115,11 @@ public class Panel {
             // Print to break line
             System.out.println();
         }
+    }
+
+    private static int randomNumberForSets(ArrayList list) {
+        Random random = new Random();
+        return random.nextInt(list.size());
     }
 
     @Override

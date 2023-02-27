@@ -3,9 +3,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        LinkedHashSet<Panel> asd = Panel.panelDFS();
-        Panel mergedPanel = Panel.mergePanels(asd.stream().findFirst().get(),asd.stream().findAny().get());
-        Map mappyBoi = new Map(mergedPanel,0.0005,0.4);
+        Map mappyBoi = Panel.panelBasedMapGenerator();
         System.out.println(flat(mappyBoi.printableStructure()));
 
         System.out.println("Hello Javamap!");
